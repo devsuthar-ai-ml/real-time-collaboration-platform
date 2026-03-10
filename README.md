@@ -1,53 +1,66 @@
-# Real-Time Collaboration Platform
+<div align="center">
+  <h1>Real-Time Collaboration Platform</h1>
+  <p><strong>A private, Google Docs-style editor for teams to write together in real time.</strong></p>
+  <p>Built with React + Node.js + Socket.io + PostgreSQL</p>
+</div>
 
-Google Docs-style collaborative editor built with React, Node.js, Socket.io, Prisma, and PostgreSQL.
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-20.x-339933?logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/License-Proprietary%20(All%20Rights%20Reserved)-8B0000" alt="License" />
+</p>
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=black)
-![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?logo=node.js&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-TBD-lightgrey)
+## What This Project Is (Simple Explanation)
 
-## Overview
+If someone has never coded before, think of this as:
 
-This project provides a production-style collaborative document system with:
-- JWT-based authentication
-- Document CRUD with owner/collaborator access control
-- Real-time multi-user editing and cursor updates
-- Share permissions (`READ` / `WRITE`)
-- Version history with restore support
-- Dockerized full-stack setup for fast local and deploy-ready usage
+> A private company version of Google Docs where multiple people can open the same document, type together live, see each other updates instantly, and restore old versions if needed.
 
-## Core Features
+You can:
+- create documents
+- share them with specific users
+- control access (`READ` or `WRITE`)
+- collaborate in real time
+- track and restore version history
 
-| Area | Capability |
+## Product Highlights
+
+| Capability | What it does |
 |---|---|
-| Auth | Register, login, logout, current user endpoint |
-| Access Control | Owner + collaborator model with role-based permissions |
-| Documents | Create, edit, list, delete documents |
-| Sharing | Invite collaborators with `READ` or `WRITE` access |
-| Realtime | Live content sync, cursor presence, join notifications |
-| Versioning | Auto version history + restore older versions |
-| Security | Bcrypt password hashing, JWT middleware, Zod validation, rate limits, Helmet |
-| Quality | Jest + Supertest + socket event tests |
-| Ops | Docker Compose with backend, frontend, PostgreSQL |
+| Secure Login | User signup/login with hashed passwords + JWT authentication |
+| Document Management | Create, read, update, delete documents |
+| Sharing & Permissions | Invite collaborators with `READ` or `WRITE` rights |
+| Real-Time Collaboration | Live typing sync using Socket.io |
+| Presence Signals | Collaborator join notifications + cursor updates |
+| Version Control | Save versions and restore an older state |
+| Security Layer | Zod validation, rate limits, Helmet, auth middleware |
+| Production Setup | Dockerized backend, frontend, and PostgreSQL |
 
-## System Architecture
+## End-to-End User Flow
+
+1. User registers and logs in.
+2. User creates a document.
+3. Owner shares document with another user.
+4. Both open the same document and edit live.
+5. Every update can be stored and restored from version history.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-  UI[React + TypeScript + Tailwind]
-  API[Express REST API]
-  RT[Socket.io Gateway]
+  FE[Frontend: React + Vite + Tailwind]
+  API[Backend API: Express]
+  WS[Realtime: Socket.io]
   SVC[Service Layer]
   ORM[Prisma ORM]
   DB[(PostgreSQL)]
 
-  UI -->|REST| API
-  UI -->|Socket Events| RT
+  FE -->|HTTP REST| API
+  FE -->|WebSocket Events| WS
   API --> SVC
-  RT --> SVC
+  WS --> SVC
   SVC --> ORM --> DB
 ```
 
@@ -57,38 +70,22 @@ flowchart LR
 - Backend: Node.js, Express, Socket.io, Prisma, Zod, JWT
 - Database: PostgreSQL
 - Testing: Jest, Supertest, socket.io-client
-- Tooling: ESLint, Prettier, Docker, Docker Compose, Nginx
+- DevOps: Docker, Docker Compose, Nginx
 
-## Project Structure
+## Repository Structure
 
 ```text
 .
-|-- backend
-|   |-- prisma
-|   |   `-- schema.prisma
-|   |-- src
-|   |   |-- config
-|   |   |-- controllers
-|   |   |-- lib
-|   |   |-- middlewares
-|   |   |-- models
-|   |   |-- routes
-|   |   |-- services
-|   |   |-- sockets
-|   |   |-- types
-|   |   `-- utils
-|   |-- tests
+|-- backend/
+|   |-- prisma/
+|   |-- src/
+|   |-- tests/
 |   `-- package.json
-|-- frontend
-|   |-- src
-|   |   |-- components
-|   |   |-- hooks
-|   |   |-- pages
-|   |   |-- services
-|   |   |-- store
-|   |   `-- types
+|-- frontend/
+|   |-- src/
 |   `-- package.json
 |-- docker-compose.yml
+|-- LICENSE
 `-- README.md
 ```
 
@@ -98,36 +95,36 @@ flowchart LR
 docker compose up --build
 ```
 
-After startup:
+Services:
 - Frontend: `http://localhost:8080`
 - Backend: `http://localhost:4000`
 - PostgreSQL: `localhost:5432`
-- Health check: `http://localhost:4000/health`
+- Health: `http://localhost:4000/health`
 
-## Local Development Setup
+## Local Development
 
-### 1. Install dependencies
+### 1) Install dependencies
 
 ```bash
 cd backend && npm install
 cd ../frontend && npm install
 ```
 
-### 2. Configure environment files
+### 2) Create environment files
 
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-PowerShell alternative:
+PowerShell:
 
 ```powershell
 Copy-Item backend/.env.example backend/.env
 Copy-Item frontend/.env.example frontend/.env
 ```
 
-### 3. Prepare database
+### 3) Initialize database
 
 ```bash
 cd backend
@@ -135,43 +132,39 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
-### 4. Run apps
+### 4) Run apps
 
 ```bash
-# Terminal 1
+# terminal 1
 cd backend
 npm run dev
 
-# Terminal 2
+# terminal 2
 cd frontend
 npm run dev
 ```
-
-Local URLs:
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:4000`
 
 ## Environment Variables
 
 ### Backend (`backend/.env`)
 
-| Variable | Required | Description |
-|---|---|---|
-| `NODE_ENV` | No | `development` or `production` |
-| `PORT` | No | Backend port (default `4000`) |
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `JWT_SECRET` | Yes | JWT signing secret (use strong value in production) |
-| `JWT_EXPIRES_IN` | No | Token expiry (example: `1d`) |
-| `CORS_ORIGIN` | Yes | Allowed frontend origin |
+| Variable | Description |
+|---|---|
+| `NODE_ENV` | Environment (`development` / `production`) |
+| `PORT` | Backend port |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `JWT_SECRET` | JWT signing secret |
+| `JWT_EXPIRES_IN` | Token expiration window |
+| `CORS_ORIGIN` | Allowed frontend origin |
 
 ### Frontend (`frontend/.env`)
 
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_BASE_URL` | Yes | Backend REST base URL |
-| `VITE_SOCKET_URL` | Yes | Backend Socket.io URL |
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | Backend API base URL |
+| `VITE_SOCKET_URL` | Backend socket server URL |
 
-## API Endpoints
+## API Reference
 
 ### Auth
 - `POST /api/auth/register`
@@ -189,87 +182,51 @@ Local URLs:
 - `GET /api/documents/:id/versions`
 - `POST /api/documents/:id/versions/:versionId/restore`
 
-## Realtime Socket Events
+## Realtime Event Contract
 
 | Event | Direction | Purpose |
 |---|---|---|
-| `document:join` | Client -> Server | Join a document room |
-| `document:update` | Client -> Server | Broadcast content updates |
-| `cursor:update` | Client -> Server | Broadcast cursor metadata |
-| `notification:collaborator-joined` | Server -> Clients | Notify room on collaborator join |
+| `document:join` | Client -> Server | Join document room |
+| `document:update` | Client -> Server | Push content changes |
+| `cursor:update` | Client -> Server | Push cursor metadata |
+| `notification:collaborator-joined` | Server -> Clients | Broadcast collaborator join |
 
-## Security and Reliability
+## Security and Quality
 
-- Password hashing via `bcrypt` (`12` rounds)
-- JWT auth middleware for protected routes
-- Input validation with Zod schemas
-- Global + auth rate limiting
+- `bcrypt` password hashing (12 rounds)
+- JWT route protection
+- Zod schema validation
+- Rate limiting (global + auth routes)
 - Helmet security headers
-- ORM-based DB access via Prisma
-- Environment-based secret management
+- Prisma ORM safe DB access
+- Automated tests for auth, documents, and socket events
 
-## Testing and Quality
-
-Run backend tests:
+Run tests:
 
 ```bash
 cd backend
 npm test
 ```
 
-Build frontend:
+Run production build:
 
 ```bash
 cd frontend
 npm run build
 ```
 
-Lint:
+## Deployment Options
 
-```bash
-cd backend && npm run lint
-cd ../frontend && npm run lint
-```
+- Render
+- Railway
+- AWS (ECS + RDS + ALB)
 
-## Deployment Notes
-
-### Render
-1. Create PostgreSQL service.
-2. Deploy backend (`backend/`) as Web Service.
-3. Set backend environment variables.
-4. Deploy frontend (`frontend/`) as Static Site.
-5. Set `VITE_API_BASE_URL` and `VITE_SOCKET_URL` to backend URL.
-
-### Railway
-1. Provision PostgreSQL plugin.
-2. Deploy backend service from `backend/`.
-3. Run migrations using `prisma migrate deploy`.
-4. Deploy frontend service from `frontend/`.
-5. Configure frontend env vars to Railway backend URL.
-
-### AWS (ECS + RDS + ALB)
-1. Push backend/frontend images to ECR.
-2. Create PostgreSQL on RDS.
-3. Run backend on ECS Fargate with secret injection.
-4. Serve frontend via ALB container or S3 + CloudFront.
-5. Enable HTTPS and production CORS policy.
-
-## Screenshots
-
-Place final screenshots here and reference them in README:
-- `docs/screenshots/dashboard.png`
-- `docs/screenshots/editor.png`
-- `docs/screenshots/version-history.png`
-
-## Roadmap
-
-- CRDT/OT-based conflict resolution
-- Redis adapter for horizontal Socket.io scaling
-- Refresh token rotation + revocation
-- Rich text editor (TipTap/Lexical/Slate)
-- Audit logs and activity timeline
-- End-to-end tests with Playwright
+Use production secrets and migrate with `prisma migrate deploy`.
 
 ## License
 
-License not specified yet. Add a `LICENSE` file before public/commercial distribution.
+This repository is under a **Proprietary License (All Rights Reserved)**.
+
+You are **not allowed** to copy, modify, distribute, sublicense, sell, or commercially use this code without explicit written permission from the author.
+
+See [LICENSE](./LICENSE) for full terms.
