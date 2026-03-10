@@ -1,64 +1,104 @@
-<div align="center">
-  <h1>Real-Time Collaboration Platform</h1>
-  <p><strong>A private, Google Docs-style editor for teams to write together in real time.</strong></p>
-  <p>Built with React + Node.js + Socket.io + PostgreSQL</p>
-</div>
-
 <p align="center">
-  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=black" alt="React" />
-  <img src="https://img.shields.io/badge/Node.js-20.x-339933?logo=node.js&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/License-Proprietary%20(All%20Rights%20Reserved)-8B0000" alt="License" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=210&color=0:0f172a,100:1d4ed8&text=Real-Time%20Collaboration%20Platform&fontColor=ffffff&fontSize=34&fontAlignY=35&desc=Private%20Google%20Docs-style%20editor%20for%20teams&descAlignY=55" alt="Project Banner" />
 </p>
 
-## What This Project Is (Simple Explanation)
+<p align="center">
+  <img src="https://img.shields.io/badge/Frontend-React%20%2B%20TypeScript-0ea5e9" alt="Frontend" />
+  <img src="https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-16a34a" alt="Backend" />
+  <img src="https://img.shields.io/badge/Realtime-Socket.io-f59e0b" alt="Realtime" />
+  <img src="https://img.shields.io/badge/Database-PostgreSQL-1d4ed8" alt="Database" />
+  <img src="https://img.shields.io/badge/License-Proprietary%20(All%20Rights%20Reserved)-991b1b" alt="License" />
+</p>
 
-If someone has never coded before, think of this as:
+<p align="center">
+  <a href="#for-everyone-simple-explanation">Simple Explanation</a> |
+  <a href="#feature-cards">Features</a> |
+  <a href="#quick-start-docker">Quick Start</a> |
+  <a href="#api--realtime">API</a> |
+  <a href="#license">License</a>
+</p>
 
-> A private company version of Google Docs where multiple people can open the same document, type together live, see each other updates instantly, and restore old versions if needed.
+---
 
-You can:
-- create documents
-- share them with specific users
-- control access (`READ` or `WRITE`)
-- collaborate in real time
-- track and restore version history
+## For Everyone (Simple Explanation)
 
-## Product Highlights
+If you are non-technical, this project means:
 
-| Capability | What it does |
-|---|---|
-| Secure Login | User signup/login with hashed passwords + JWT authentication |
-| Document Management | Create, read, update, delete documents |
-| Sharing & Permissions | Invite collaborators with `READ` or `WRITE` rights |
-| Real-Time Collaboration | Live typing sync using Socket.io |
-| Presence Signals | Collaborator join notifications + cursor updates |
-| Version Control | Save versions and restore an older state |
-| Security Layer | Zod validation, rate limits, Helmet, auth middleware |
-| Production Setup | Dockerized backend, frontend, and PostgreSQL |
+> A private company-style Google Docs where multiple users can open the same file, edit together live, and safely restore old versions.
 
-## End-to-End User Flow
+Main benefits:
+- users can sign up and log in securely
+- documents can be shared with specific people
+- access can be controlled (`READ` or `WRITE`)
+- typing changes are visible in real time
+- old versions can be restored if something goes wrong
 
-1. User registers and logs in.
-2. User creates a document.
-3. Owner shares document with another user.
-4. Both open the same document and edit live.
-5. Every update can be stored and restored from version history.
+## Feature Cards
+
+<table>
+  <tr>
+    <td width="33%">
+      <h3>Secure Auth</h3>
+      <p>JWT login flow with password hashing and protected APIs.</p>
+    </td>
+    <td width="33%">
+      <h3>Live Collaboration</h3>
+      <p>Socket-based real-time sync for document updates.</p>
+    </td>
+    <td width="33%">
+      <h3>Access Control</h3>
+      <p>Owner, collaborator, and permission-based sharing model.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%">
+      <h3>Version History</h3>
+      <p>Track historical versions and restore older content.</p>
+    </td>
+    <td width="33%">
+      <h3>Team Presence</h3>
+      <p>Collaborator join notifications and cursor updates.</p>
+    </td>
+    <td width="33%">
+      <h3>Deployment Ready</h3>
+      <p>Dockerized backend, frontend, and PostgreSQL setup.</p>
+    </td>
+  </tr>
+</table>
+
+## Product Flow
+
+```mermaid
+sequenceDiagram
+  participant Owner
+  participant Collaborator
+  participant Backend
+  participant DB
+
+  Owner->>Backend: Register/Login
+  Owner->>Backend: Create document
+  Owner->>Backend: Share document (WRITE/READ)
+  Collaborator->>Backend: Login + open shared document
+  Owner->>Backend: Live edit event
+  Backend-->>Collaborator: Broadcast live update
+  Collaborator->>Backend: Edit event
+  Backend-->>Owner: Broadcast live update
+  Backend->>DB: Save document version
+```
 
 ## Architecture
 
 ```mermaid
 flowchart LR
   FE[Frontend: React + Vite + Tailwind]
-  API[Backend API: Express]
-  WS[Realtime: Socket.io]
+  API[Express REST API]
+  WS[Socket.io Gateway]
   SVC[Service Layer]
   ORM[Prisma ORM]
   DB[(PostgreSQL)]
 
-  FE -->|HTTP REST| API
-  FE -->|WebSocket Events| WS
+  FE -->|HTTP| API
+  FE -->|Socket Events| WS
   API --> SVC
   WS --> SVC
   SVC --> ORM --> DB
@@ -70,7 +110,7 @@ flowchart LR
 - Backend: Node.js, Express, Socket.io, Prisma, Zod, JWT
 - Database: PostgreSQL
 - Testing: Jest, Supertest, socket.io-client
-- DevOps: Docker, Docker Compose, Nginx
+- Runtime/Infra: Docker, Docker Compose, Nginx
 
 ## Repository Structure
 
@@ -95,36 +135,36 @@ flowchart LR
 docker compose up --build
 ```
 
-Services:
+Available services:
 - Frontend: `http://localhost:8080`
 - Backend: `http://localhost:4000`
-- PostgreSQL: `localhost:5432`
+- DB: `localhost:5432`
 - Health: `http://localhost:4000/health`
 
 ## Local Development
 
-### 1) Install dependencies
+### Install dependencies
 
 ```bash
 cd backend && npm install
 cd ../frontend && npm install
 ```
 
-### 2) Create environment files
+### Configure environment files
 
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-PowerShell:
+PowerShell alternative:
 
 ```powershell
 Copy-Item backend/.env.example backend/.env
 Copy-Item frontend/.env.example frontend/.env
 ```
 
-### 3) Initialize database
+### Prepare database
 
 ```bash
 cd backend
@@ -132,7 +172,7 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
-### 4) Run apps
+### Run development servers
 
 ```bash
 # terminal 1
@@ -144,35 +184,15 @@ cd frontend
 npm run dev
 ```
 
-## Environment Variables
+## API + Realtime
 
-### Backend (`backend/.env`)
-
-| Variable | Description |
-|---|---|
-| `NODE_ENV` | Environment (`development` / `production`) |
-| `PORT` | Backend port |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_SECRET` | JWT signing secret |
-| `JWT_EXPIRES_IN` | Token expiration window |
-| `CORS_ORIGIN` | Allowed frontend origin |
-
-### Frontend (`frontend/.env`)
-
-| Variable | Description |
-|---|---|
-| `VITE_API_BASE_URL` | Backend API base URL |
-| `VITE_SOCKET_URL` | Backend socket server URL |
-
-## API Reference
-
-### Auth
+### Auth APIs
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
 - `GET /api/auth/me`
 
-### Documents
+### Document APIs
 - `GET /api/documents`
 - `POST /api/documents`
 - `GET /api/documents/:id`
@@ -182,51 +202,55 @@ npm run dev
 - `GET /api/documents/:id/versions`
 - `POST /api/documents/:id/versions/:versionId/restore`
 
-## Realtime Event Contract
+### Socket Events
 
 | Event | Direction | Purpose |
 |---|---|---|
 | `document:join` | Client -> Server | Join document room |
-| `document:update` | Client -> Server | Push content changes |
-| `cursor:update` | Client -> Server | Push cursor metadata |
-| `notification:collaborator-joined` | Server -> Clients | Broadcast collaborator join |
+| `document:update` | Client -> Server | Sync content changes |
+| `cursor:update` | Client -> Server | Sync cursor metadata |
+| `notification:collaborator-joined` | Server -> Clients | Notify collaborator join |
 
 ## Security and Quality
 
-- `bcrypt` password hashing (12 rounds)
+- Bcrypt hashing (`12` rounds)
 - JWT route protection
-- Zod schema validation
-- Rate limiting (global + auth routes)
+- Zod request validation
+- Rate limiting
 - Helmet security headers
-- Prisma ORM safe DB access
-- Automated tests for auth, documents, and socket events
+- Prisma ORM protection layer
+- Unit/integration/socket tests
 
-Run tests:
+Run backend tests:
 
 ```bash
 cd backend
 npm test
 ```
 
-Run production build:
+Build frontend:
 
 ```bash
 cd frontend
 npm run build
 ```
 
-## Deployment Options
+## Deployment Targets
 
 - Render
 - Railway
 - AWS (ECS + RDS + ALB)
 
-Use production secrets and migrate with `prisma migrate deploy`.
+Use production secrets and run:
+
+```bash
+npx prisma migrate deploy
+```
 
 ## License
 
-This repository is under a **Proprietary License (All Rights Reserved)**.
+This project is **Proprietary (All Rights Reserved)**.
 
-You are **not allowed** to copy, modify, distribute, sublicense, sell, or commercially use this code without explicit written permission from the author.
+You are not allowed to copy, modify, distribute, sell, or commercially use this code without written permission from the author.
 
-See [LICENSE](./LICENSE) for full terms.
+Full legal terms: [LICENSE](./LICENSE)
